@@ -158,6 +158,12 @@ namespace BlenderControls
 			return false;
 		}
 
+		// Don't handle while RMB is held (viewport fly navigation: WASD conflicts with hotkeys)
+		if (SlateApp.GetPressedMouseButtons().Contains(EKeys::RightMouseButton))
+		{
+			return false;
+		}
+
 		// Don't handle if user is typing in a text field
 		const TSharedPtr<SWidget> Focused = SlateApp.GetKeyboardFocusedWidget();
 		const FString Type = Focused.IsValid() ? Focused->GetTypeAsString() : FString();
