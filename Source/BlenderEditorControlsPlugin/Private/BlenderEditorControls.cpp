@@ -67,6 +67,15 @@ namespace BlenderControls
 
 	void FBlenderEditorControlsPluginModule::RegisterInputProcessor()
 	{
+		// Commandlet runs (cook / package / automation) load editor modules before Slate exists,
+		// so FSlateApplication::Get() would assert (CurrentApplication.IsValid()). The processor
+		// is only meaningful in the interactive editor, where Slate is initialized by the time
+		// Default-phase modules load - just skip registration otherwise.
+		if (!FSlateApplication::IsInitialized())
+		{
+			return;
+		}
+
 		InputProcessor = MakeShared<FInputProcessor>(CommandList);
 		InputProcessor->BindCommands();
 		//Ensure that this input-processor receives input first (amongst all input-processors). 
